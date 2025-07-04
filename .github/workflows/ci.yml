@@ -2,12 +2,12 @@ name: CI
 
 # ワークフローが実行されるトリガー
 on:
-  # mainブランチにプッシュされたとき
+  # developブランチにプッシュされたとき
   push:
-    branches: ["main"]
-  # mainブランチに対するプルリクエストが作成されたとき
+    branches: ["develop"]
+  # developブランチに対するプルリクエストが作成されたとき
   pull_request:
-    branches: ["main"]
+    branches: ["develop"]
 
 # 実行するジョブを定義
 jobs:
@@ -31,6 +31,10 @@ jobs:
       # 依存関係のインストール
       - name: Install dependencies
         run: bun install
+
+      # テストの実行
+      - name: Run Tests
+        run: bun test
 
       # Lintの実行
       - name: Run Lint
