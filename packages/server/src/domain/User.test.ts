@@ -15,7 +15,9 @@ describe("User", () => {
 
 		it("uidが提供されない場合、エラーがスローされる", () => {
 			const invalidUserData = { uid: "" };
-			expect(() => User.create(invalidUserData as any)).toThrow("uidが指定されていません。");
+
+			// @ts-expect-error: uidが不正なため、ここで型エラーが発生することをテストで意図しています
+			expect(() => User.create(invalidUserData)).toThrow("uidが指定されていません。");
 		});
 	});
 });

@@ -5,7 +5,7 @@ import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
 // IAuthServiceのモックを作成
 const mockAuthService: IAuthService = {
-	verifyToken: async (token: string) => User.create({ uid: "default-uid", displayName: "DefaultUser" }),
+	verifyToken: async () => User.create({ uid: "default-uid", displayName: "DefaultUser" }),
 };
 
 // spyOnを使って、特定のメソッドの呼び出しを監視・制御
