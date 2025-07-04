@@ -1,0 +1,41 @@
+name: CI
+
+# ワークフローが実行されるトリガー
+on:
+  # mainブランチにプッシュされたとき
+  push:
+    branches: ["main"]
+  # mainブランチに対するプルリクエストが作成されたとき
+  pull_request:
+    branches: ["main"]
+
+# 実行するジョブを定義
+jobs:
+  lint-and-format:
+    name: Lint and Format Check
+    # ジョブを実行する仮想マシンのOSを指定
+    runs-on: ubuntu-latest
+
+    # ジョブのステップを定義
+    steps:
+      # 1. リポジトリのソースコードをチェックアウト
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Bunの実行環境をセットアップ
+      - name: Setup Bun
+        uses: oven-sh/bun-install@v1
+        with:
+          bun-version: "latest"
+
+      # 依存関係のインストール
+      - name: Install dependencies
+        run: bun install
+
+      # Lintの実行
+      - name: Run Lint
+        run: bun run lint
+
+      # フォーマットの実行
+      - name: Run Format Check
+        run: bun run format:check

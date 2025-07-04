@@ -1,0 +1,23 @@
+# Set default behavior to automatically normalize line endings.
+* text=auto eol=lf
+
+# Explicitly declare text files you want to always be normalized to LF line endings.
+*.js      text
+*.jsx     text
+*.ts      text
+*.tsx     text
+*.css     text
+*.html    text
+*.json    text
+*.md      text
+*.yml     text
+*.yaml    text
+*.gitignore      text
+*.prettierignore text
+
+# Denote all files that are truly binary and should not be modified.
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary

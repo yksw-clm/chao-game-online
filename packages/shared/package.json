@@ -1,0 +1,19 @@
+{
+	"name": "@chao-game-online/shared",
+	"module": "index.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./src/index.ts"
+		},
+		"./*": {
+			"import": "./src/*.ts"
+		}
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}

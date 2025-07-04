@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+build
+coverage
+
+# Bun lockfile (binary file)
+bun.lockb
+
+# Cache
+.eslintcache
+.prettiercache
