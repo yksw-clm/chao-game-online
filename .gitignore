@@ -19,6 +19,7 @@ build/
 .env
 .env.*
 !.env.example
+serviceAccountKey.json
 
 # OS-generated files
 .DS_Store
