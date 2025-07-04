@@ -24,7 +24,7 @@ export class User {
 	public static create(props: { uid: string; displayName: string }): User {
 		// 不変条件：uidは必須
 		if (!props.uid) {
-			throw new Error("User must have a uid.");
+			throw new Error("uidが指定されていません。");
 		}
 		return new User(props);
 	}
