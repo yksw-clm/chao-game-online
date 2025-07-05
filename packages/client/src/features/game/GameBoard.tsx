@@ -1,11 +1,12 @@
-import type { BoardState } from "@chao-game-online/shared/dtos";
+import type { BoardState, PlayerId } from "@chao-game-online/shared/dtos";
 import { useGameStore } from "./useGameStore";
 
 type GameBoardProps = {
 	board: BoardState;
+	colorMap: { [id: PlayerId]: string }; // colorMapを受け取る
 };
 
-export const GameBoard = ({ board }: GameBoardProps) => {
+export const GameBoard = ({ board, colorMap }: GameBoardProps) => {
 	const { placeStone } = useGameStore();
 
 	const handleCellClick = (x: number, y: number) => {
@@ -22,7 +23,7 @@ export const GameBoard = ({ board }: GameBoardProps) => {
 						className="w-12 h-12 flex items-center justify-center border border-green-800 cursor-pointer"
 						onClick={() => handleCellClick(x, y)}
 					>
-						{cell && <div className={`w-10 h-10 rounded-full ${cell === "player1_id" ? "bg-black" : "bg-white"}`} />}
+						{cell && <div className={`w-10 h-10 rounded-full ${colorMap[cell] ?? "bg-gray-400"}`} />}
 					</div>
 				))
 			)}

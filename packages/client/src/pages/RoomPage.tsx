@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRoomStore } from "@/features/room/useRoomStore";
 import { useSocketStore } from "@/services/socket/useSocketStore";
@@ -17,6 +17,17 @@ export const RoomPage = () => {
 	const { room, setRoom, leaveRoom, startGame } = useRoomStore();
 	const { user } = useAuthStore(); // ログインユーザー情報を取得
 	const { gameState, setGameState } = useGameStore();
+
+	// プレイヤーIDと色のマッピングを作成
+	const colorMap = useMemo(() => {
+		if (!room) return {};
+		const colors = ["bg-black", "bg-white", "bg-red-500", "bg-blue-500"];
+		const map: { [id: string]: string } = {};
+		room.players.forEach((player, index) => {
+			map[player.id] = colors[index] ?? "bg-gray-400";
+		});
+		return map;
+	}, [room]);
 
 	// 現在のユーザーがホストかどうかを判定
 	const isHost = room?.players.find((p) => p.isHost)?.id === user?.uid;
@@ -72,7 +83,7 @@ export const RoomPage = () => {
 			<main className="grid grid-cols-3 gap-4">
 				<div className="col-span-2">
 					{gameState ? (
-						<GameBoard board={gameState.board} />
+						<GameBoard board={gameState.board} colorMap={colorMap} />
 					) : (
 						<div className="flex items-center justify-center h-full bg-gray-100 rounded-md">
 							<p className="text-muted-foreground">

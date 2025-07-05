@@ -47,8 +47,13 @@ class GameService {
 		return this._games.get(roomNumber);
 	}
 
+	/**
+	 * 指定されたルームのゲームセッションを終了（削除）します。
+	 * @param roomNumber 終了するゲームのルーム番号
+	 */
 	public endGame(roomNumber: number): void {
 		this._games.delete(roomNumber);
+		console.log(`Game for room #${roomNumber} has been ended.`);
 	}
 }
 
