@@ -9,10 +9,14 @@ import { useLobbyStore } from "./useLobbyStore";
 import { GameType, GameTypeNames } from "@chao-game-online/shared/core";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import { useRoomStore } from "../room/useRoomStore";
+import { useNavigate } from "react-router-dom";
 
 export const CreateRoomModal = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const { createRoom } = useLobbyStore();
+	const { setRoom } = useRoomStore();
+	const navigate = useNavigate();
 
 	const form = useForm<CreateRoomPayload>({
 		resolver: zodResolver(CreateRoomSchema),
@@ -25,9 +29,9 @@ export const CreateRoomModal = () => {
 	const onSubmit = (data: CreateRoomPayload) => {
 		createRoom(data, (res) => {
 			if (res.success) {
-				alert(`ルーム「${res.data?.name}」を作成しました`);
+				setRoom(res.data); // ルーム情報をストアに保存
 				setIsOpen(false);
-				// TODO: 作成したルーム画面に遷移
+				navigate(`/room/${res.data.number}`); // ルーム画面へ遷移
 			} else {
 				alert(`ルームの作成に失敗しました: ${res.error}`);
 			}
