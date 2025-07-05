@@ -17,8 +17,8 @@ export const RoomPage = () => {
 	const { socket } = useSocketStore();
 	const { room, setRoom, leaveRoom, startGame } = useRoomStore();
 	const { user } = useAuthStore(); // ログインユーザー情報を取得
-	const { gameState, setGameState } = useGameStore();
 	const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+	const { gameState, setGameState, gamePlayers, setGamePlayers } = useGameStore();
 
 	// プレイヤーIDと色のマッピングを作成
 	const colorMap = useMemo(() => {
@@ -29,7 +29,7 @@ export const RoomPage = () => {
 			map[player.id] = colors[index] ?? "bg-gray-400";
 		});
 		return map;
-	}, [room]);
+	}, [gamePlayers]);
 
 	// 現在のユーザーがホストかどうかを判定
 	const isHost = room?.players.find((p) => p.isHost)?.id === user?.uid;
@@ -48,6 +48,21 @@ export const RoomPage = () => {
 		};
 
 		const handleGameStateUpdated = (newGameState: GameStateDto) => {
+			// ゲームが開始された瞬間を検知
+			const currentGameState = useGameStore.getState().gameState;
+			if (!currentGameState && newGameState) {
+				// その時点のルーム参加者をゲームプレイヤーとして保存
+				const currentRoom = useRoomStore.getState().room;
+				if (currentRoom) {
+					setGamePlayers(currentRoom.players);
+				}
+			}
+
+			// ゲームが「今」終了したかを判定
+			if (currentGameState && !currentGameState.isGameOver && newGameState.isGameOver) {
+				setIsResultModalOpen(true); // モーダルを自動で開く
+			}
+
 			setGameState(newGameState);
 		};
 
@@ -59,13 +74,7 @@ export const RoomPage = () => {
 			socket.off("room:updated", handleRoomUpdated);
 			socket.off("game:updated", handleGameStateUpdated);
 		};
-	}, [socket, setRoom, roomNumber]);
-
-	useEffect(() => {
-		if (gameState?.isGameOver) {
-			setIsResultModalOpen(true);
-		}
-	}, [gameState?.isGameOver]);
+	}, [socket, setRoom, roomNumber, setGameState, setGamePlayers]);
 
 	const winnerName = useMemo(() => {
 		if (!gameState?.winner) return "引き分け";

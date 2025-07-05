@@ -48,6 +48,22 @@ export class Game {
 			this._board[4]![3] = p3; // 青
 			this._board[5]![4] = p3; // 青
 		}
+
+		// 開発時は、すぐに対局が終わるように4個の空きますだけの盤面を用意
+		if (process.env.NODE_ENV === "development") {
+			for (let y = 0; y < this.boardSize; y++) {
+				for (let x = 0; x < this.boardSize; x++) {
+					if (this._board[y]![x] === null) {
+						const randomPlayerIndex = Math.floor(Math.random() * this._players.length);
+						this._board[y]![x] = this._players[randomPlayerIndex]!.uid;
+					}
+				}
+			}
+			this._board[3]![3] = null;
+			this._board[4]![2] = null;
+			this._board[3]![5] = null;
+			this._board[4]![4] = null;
+		}
 	}
 
 	/**
