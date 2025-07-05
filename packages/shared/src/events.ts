@@ -1,7 +1,7 @@
 import type { RoomInfoDto, RoomStateDto } from "./dtos";
 import type { CreateRoomPayload, JoinRoomPayload } from "./schemas";
 
-export type AckResponse<T = void> =
+export type AckResponse<T = null> =
 	| {
 			success: true;
 			data: T;
