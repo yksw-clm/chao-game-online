@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, getIdToken } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@/services/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,13 +44,12 @@ export const AuthForm = () => {
 
 	const handleLogin = async (data: LoginFormData) => {
 		try {
-			const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-			const idToken = await getIdToken(userCredential.user);
-			console.log("ログイン成功:", { user: userCredential.user });
-			console.log("ID Token:", idToken);
-			alert("ログインに成功しました！コンソールを確認してください。");
+			await signInWithEmailAndPassword(auth, data.email, data.password);
+
+			alert("ログインに成功しました！");
 		} catch (error) {
 			console.error("ログインエラー:", error);
+
 			alert("ログインに失敗しました。");
 		}
 	};
@@ -59,10 +58,8 @@ export const AuthForm = () => {
 		try {
 			const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
 			await updateProfile(userCredential.user, { displayName: data.displayName });
-			const idToken = await getIdToken(userCredential.user);
-			console.log("新規登録成功:", { user: userCredential.user });
-			console.log("ID Token:", idToken);
-			alert("新規登録に成功しました！コンソールを確認してください。");
+
+			alert("新規登録に成功しました！");
 		} catch (error) {
 			console.error("新規登録エラー:", error);
 			alert("新規登録に失敗しました。");
