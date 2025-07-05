@@ -2,6 +2,7 @@ import { GameType } from "@chao-game-online/shared/core";
 import type { RoomInfoDto } from "@chao-game-online/shared/dtos";
 import { Room } from "@domain/Room";
 import { User } from "@domain/User";
+import { gameService } from "./GameService";
 
 /**
  * アプリケーション全体のルーム（インメモリ）を管理するシングルトンサービス。
@@ -78,6 +79,8 @@ class LobbyService {
 		// ルームが空になったら削除
 		if (room.isEmpty()) {
 			this._rooms.delete(roomNumber);
+			// ルーム削除に伴い、関連するゲームも削除する
+			gameService.endGame(roomNumber);
 			return undefined; // ルームが削除されたことを示す
 		}
 		return room;

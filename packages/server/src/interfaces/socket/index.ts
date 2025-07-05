@@ -3,6 +3,7 @@ import { authMiddleware } from "./authMiddleware";
 import type { MyServer } from "./types";
 import { LobbyHandler } from "./LobbyHandler";
 import { lobbyService } from "@application/services/LobbyService";
+import { GameHandler } from "./GameHandler";
 
 // サーバーのセットアップと起動ロジック
 export class SocketServer {
@@ -27,6 +28,7 @@ export class SocketServer {
 
 			// LobbyHandlerをインスタンス化してリスナーを登録
 			new LobbyHandler(this.io, socket).registerListeners();
+			new GameHandler(this.io, socket).registerListeners();
 
 			// 接続時に現在のロビー情報を送る
 			socket.emit("lobby:rooms_updated", lobbyService.getAllRoomsInfoDtos());
