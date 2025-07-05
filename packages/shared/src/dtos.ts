@@ -31,4 +31,6 @@ export type GameStateDto = {
 	currentPlayerId: PlayerId;
 	winner: PlayerId | null;
 	isGameOver: boolean;
+	validMoves: { x: number; y: number }[];
+	scores: { [id: PlayerId]: number } | null;
 };

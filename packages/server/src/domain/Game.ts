@@ -10,6 +10,7 @@ export class Game {
 	private _currentPlayerIndex: number;
 	private _isGameOver: boolean = false;
 	private _winner: PlayerId | null = null;
+	private _scores: { [id: string]: number } | null = null;
 	private _consecutivePasses: number = 0; // 連続パスのカウンター
 	public readonly boardSize: number = 8;
 	private readonly DIRECTIONS = [
@@ -148,6 +149,7 @@ export class Game {
 					}
 				}
 			}
+			this._scores = scores;
 
 			let maxScore = -1;
 			let winnerId: PlayerId | null = null;
@@ -237,6 +239,8 @@ export class Game {
 			currentPlayerId: this.getCurrentPlayer()?.uid ?? "",
 			winner: this._winner,
 			isGameOver: this._isGameOver,
+			validMoves: this.getValidMoves(),
+			scores: this._scores,
 		};
 	}
 }

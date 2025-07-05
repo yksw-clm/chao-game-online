@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRoomStore } from "@/features/room/useRoomStore";
 import { useSocketStore } from "@/services/socket/useSocketStore";
@@ -9,6 +9,7 @@ import type { GameStateDto, RoomStateDto } from "@chao-game-online/shared/dtos";
 import { useGameStore } from "@/features/game/useGameStore";
 import { GameBoard } from "@/features/game/GameBoard";
 import { useAuthStore } from "@/features/auth/useAuthStore";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const RoomPage = () => {
 	const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const RoomPage = () => {
 	const { room, setRoom, leaveRoom, startGame } = useRoomStore();
 	const { user } = useAuthStore(); // ログインユーザー情報を取得
 	const { gameState, setGameState } = useGameStore();
+	const [isResultModalOpen, setIsResultModalOpen] = useState(false);
 
 	// プレイヤーIDと色のマッピングを作成
 	const colorMap = useMemo(() => {
@@ -59,6 +61,17 @@ export const RoomPage = () => {
 		};
 	}, [socket, setRoom, roomNumber]);
 
+	useEffect(() => {
+		if (gameState?.isGameOver) {
+			setIsResultModalOpen(true);
+		}
+	}, [gameState?.isGameOver]);
+
+	const winnerName = useMemo(() => {
+		if (!gameState?.winner) return "引き分け";
+		return room?.players.find((p) => p.id === gameState.winner)?.displayName ?? "不明";
+	}, [gameState?.winner, room?.players]);
+
 	const handleLeaveRoom = () => {
 		leaveRoom(() => {
 			alert("ルームから退室しました。");
@@ -76,14 +89,26 @@ export const RoomPage = () => {
 				<h1 className="text-2xl font-bold">
 					ルーム: {room.name} (#{room.number})
 				</h1>
-				<Button onClick={handleLeaveRoom} variant="outline">
-					退室する
-				</Button>
+				<div>
+					{gameState?.isGameOver && (
+						<Button onClick={() => setIsResultModalOpen(true)} variant="secondary" className="mr-2">
+							結果を表示
+						</Button>
+					)}
+					<Button onClick={handleLeaveRoom} variant="outline">
+						退室する
+					</Button>
+				</div>
 			</header>
 			<main className="grid grid-cols-3 gap-4">
 				<div className="col-span-2">
 					{gameState ? (
-						<GameBoard board={gameState.board} colorMap={colorMap} />
+						<GameBoard
+							board={gameState.board}
+							colorMap={colorMap}
+							validMoves={gameState.validMoves}
+							currentPlayerId={gameState.currentPlayerId}
+						/>
 					) : (
 						<div className="flex items-center justify-center h-full bg-gray-100 rounded-md">
 							<p className="text-muted-foreground">
@@ -112,7 +137,7 @@ export const RoomPage = () => {
 							</TableHeader>
 							<TableBody>
 								{room.players.map((player) => (
-									<TableRow key={player.id}>
+									<TableRow key={player.id} className={gameState?.currentPlayerId === player.id ? "bg-yellow-100 font-bold" : ""}>
 										<TableCell>{player.displayName}</TableCell>
 										<TableCell>{player.isHost ? "ホスト" : "ゲスト"}</TableCell>
 									</TableRow>
@@ -122,6 +147,27 @@ export const RoomPage = () => {
 					</CardContent>
 				</Card>
 			</main>
+
+			<Dialog open={isResultModalOpen} onOpenChange={setIsResultModalOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>ゲーム結果</DialogTitle>
+						<DialogDescription>勝者: {winnerName}</DialogDescription>
+					</DialogHeader>
+					<div>
+						<h3 className="font-bold mb-2">スコア</h3>
+						<ul>
+							{gameState?.scores &&
+								room.players.map((player) => (
+									<li key={player.id} className="flex justify-between">
+										<span>{player.displayName}</span>
+										<span>{gameState.scores?.[player.id] ?? 0}</span>
+									</li>
+								))}
+						</ul>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 };
