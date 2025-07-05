@@ -36,6 +36,15 @@ export default tseslint.config(
 			// Viteのためのルール
 			"react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
 		},
+		overrides: [
+			// shadcn/uiコンポーネントの特定のルールを無効化
+			{
+				files: ["src/components/ui/**/*.ts", "src/components/ui/**/*.tsx"],
+				rules: {
+					"react-refresh/only-export-components": "off",
+				},
+			},
+		],
 	},
 
 	// 3. サーバー(Bun)用の設定
