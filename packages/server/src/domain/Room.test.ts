@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "bun:test";
 import { Room } from "./Room";
 import { User } from "./User";
-import { GameType } from "@chao-game-online/shared/core";
+import { GameTypes } from "@chao-game-online/shared/core";
 
 describe("Room", () => {
 	let host: User;
@@ -14,7 +14,7 @@ describe("Room", () => {
 
 	describe("create", () => {
 		it("有効なプロパティでRoomインスタンスを正しく生成できる", () => {
-			const room = Room.create(12345, { name: "Test Room", gameType: GameType["four-reversi"], host });
+			const room = Room.create(12345, { name: "Test Room", gameType: GameTypes.FOUR_REVERSI, host });
 			expect(room).toBeInstanceOf(Room);
 			expect(room.number).toBe(12345);
 			expect(room.getPlayerCount()).toBe(1); // ホストが自動で追加される
@@ -27,21 +27,21 @@ describe("Room", () => {
 			{ number: 12345, name: "This room name is way too long", reason: "ルーム名が20文字を超える" },
 		])("無効なプロパティ ($reason) で生成しようとするとエラーをスローする", ({ number, name }) => {
 			expect(() => {
-				Room.create(number, { name, gameType: GameType["four-reversi"], host });
+				Room.create(number, { name, gameType: GameTypes.FOUR_REVERSI, host });
 			}).toThrow();
 		});
 	});
 
 	describe("addPlayer", () => {
 		it("新しいプレイヤーをルームに追加できる", () => {
-			const room = Room.create(12345, { name: "Test Room", gameType: GameType["four-reversi"], host });
+			const room = Room.create(12345, { name: "Test Room", gameType: GameTypes.FOUR_REVERSI, host });
 			room.addPlayer(player2);
 			expect(room.getPlayerCount()).toBe(2);
 			expect(room.getPlayer(player2.uid)).toBe(player2);
 		});
 
 		it("ルームが満員の場合、新しいプレイヤーを追加しようとするとエラーをスローする", () => {
-			const room = Room.create(12345, { name: "Test Room", gameType: GameType["four-reversi"], host });
+			const room = Room.create(12345, { name: "Test Room", gameType: GameTypes.FOUR_REVERSI, host });
 			room.addPlayer(User.create({ uid: "p2", displayName: "P2" }));
 			room.addPlayer(User.create({ uid: "p3", displayName: "P3" }));
 			room.addPlayer(User.create({ uid: "p4", displayName: "P4" }));
@@ -56,7 +56,7 @@ describe("Room", () => {
 	describe("removePlayer", () => {
 		let room: Room;
 		beforeEach(() => {
-			room = Room.create(12345, { name: "Test Room", gameType: GameType["four-reversi"], host });
+			room = Room.create(12345, { name: "Test Room", gameType: GameTypes.FOUR_REVERSI, host });
 			room.addPlayer(player2);
 		});
 
@@ -83,20 +83,20 @@ describe("Room", () => {
 
 	describe("DTO変換", () => {
 		it("toRoomInfoDtoが正しい形式のデータを返す", () => {
-			const room = Room.create(54321, { name: "DTO Test", gameType: GameType["four-gomoku"], host });
+			const room = Room.create(54321, { name: "DTO Test", gameType: GameTypes.FOUR_REVERSI, host });
 			room.addPlayer(player2);
 			const dto = room.toRoomInfoDto();
 			expect(dto).toEqual({
 				number: 54321,
 				name: "DTO Test",
-				gameType: GameType["four-gomoku"],
+				gameType: GameTypes.FOUR_REVERSI,
 				playerCount: 2,
 				maxPlayerCount: 4,
 			});
 		});
 
 		it("toRoomStateDtoが正しい形式のデータを返す", () => {
-			const room = Room.create(54321, { name: "DTO Test", gameType: GameType["four-gomoku"], host });
+			const room = Room.create(54321, { name: "DTO Test", gameType: GameTypes.FOUR_REVERSI, host });
 			room.addPlayer(player2);
 			const dto = room.toRoomStateDto();
 			expect(dto.number).toBe(54321);

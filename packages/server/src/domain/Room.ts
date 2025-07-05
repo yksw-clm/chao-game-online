@@ -1,4 +1,4 @@
-import { GameType } from "@chao-game-online/shared/core";
+import { type GameType, GameTypes } from "@chao-game-online/shared/core";
 import { User } from "./User";
 import type { PlayerDto, RoomInfoDto, RoomStateDto } from "@chao-game-online/shared/dtos";
 
@@ -54,7 +54,7 @@ export class Room {
 		if (props.name.length > 20) {
 			throw new Error("ルーム名は20文字以下である必要があります");
 		}
-		if (!Object.values(GameType).includes(props.gameType)) {
+		if (!Object.values(GameTypes).includes(props.gameType)) {
 			throw new Error("無効なゲームタイプです");
 		}
 
