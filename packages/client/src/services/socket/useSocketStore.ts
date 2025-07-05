@@ -17,7 +17,6 @@ export const useSocketStore = create<SocketState>((set) => ({
 	connect: (token) => {
 		const newSocket = io(SOCKET_URL, {
 			auth: { token },
-			transports: ["websocket"],
 		});
 
 		newSocket.on("connect", () => {
