@@ -21,3 +21,14 @@ export type RoomStateDto = {
 	players: PlayerDto[];
 	maxPlayerCount: number;
 };
+
+export type PlayerId = string;
+export type CellState = PlayerId | null;
+export type BoardState = CellState[][];
+
+export type GameStateDto = {
+	board: BoardState;
+	currentPlayerId: PlayerId;
+	winner: PlayerId | null;
+	isGameOver: boolean;
+};

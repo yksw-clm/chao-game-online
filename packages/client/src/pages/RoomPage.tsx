@@ -5,13 +5,23 @@ import { useSocketStore } from "@/services/socket/useSocketStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import type { RoomStateDto } from "@chao-game-online/shared/dtos";
+import type { GameStateDto, RoomStateDto } from "@chao-game-online/shared/dtos";
+import { useGameStore } from "@/features/game/useGameStore";
+import { GameBoard } from "@/features/game/GameBoard";
+import { useAuthStore } from "@/features/auth/useAuthStore";
 
 export const RoomPage = () => {
 	const navigate = useNavigate();
 	const { roomNumber } = useParams<{ roomNumber: string }>();
 	const { socket } = useSocketStore();
-	const { room, setRoom, leaveRoom } = useRoomStore();
+	const { room, setRoom, leaveRoom, startGame } = useRoomStore();
+	const { user } = useAuthStore(); // ログインユーザー情報を取得
+	const { gameState, setGameState } = useGameStore();
+
+	// 現在のユーザーがホストかどうかを判定
+	const isHost = room?.players.find((p) => p.isHost)?.id === user?.uid;
+	// ゲーム開始ボタンを表示する条件
+	const canStartGame = isHost && room?.players.length === room?.maxPlayerCount && !gameState;
 
 	useEffect(() => {
 		if (!socket) return;
@@ -24,11 +34,17 @@ export const RoomPage = () => {
 			}
 		};
 
+		const handleGameStateUpdated = (newGameState: GameStateDto) => {
+			setGameState(newGameState);
+		};
+
 		socket.on("room:updated", handleRoomUpdated);
+		socket.on("game:updated", handleGameStateUpdated);
 
 		// コンポーネントのアンマウント時にイベントリスナーを解除
 		return () => {
 			socket.off("room:updated", handleRoomUpdated);
+			socket.off("game:updated", handleGameStateUpdated);
 		};
 	}, [socket, setRoom, roomNumber]);
 
@@ -53,7 +69,24 @@ export const RoomPage = () => {
 					退室する
 				</Button>
 			</header>
-			<main>
+			<main className="grid grid-cols-3 gap-4">
+				<div className="col-span-2">
+					{gameState ? (
+						<GameBoard board={gameState.board} />
+					) : (
+						<div className="flex items-center justify-center h-full bg-gray-100 rounded-md">
+							<p className="text-muted-foreground">
+								{canStartGame ? (
+									<Button onClick={startGame} size="lg">
+										ゲーム開始
+									</Button>
+								) : (
+									"ゲーム開始待機中..."
+								)}
+							</p>
+						</div>
+					)}
+				</div>
 				<Card>
 					<CardHeader>
 						<CardTitle>参加者一覧</CardTitle>
