@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GameType } from "../core";
+import { GameTypes } from "../core";
 
 // ルーム作成
 export const CreateRoomSchema = z.object({
@@ -7,7 +7,8 @@ export const CreateRoomSchema = z.object({
 		.string({ required_error: "ルーム名を入力してください" })
 		.min(3, "ルーム名は3文字以上で入力してください")
 		.max(20, "ルーム名は20文字以下で入力してください"),
-	GameType: z.nativeEnum(GameType, {
+	GameType: z.enum([GameTypes.FOUR_REVERSI, GameTypes.FOUR_GOMOKU], {
+		// 変更後
 		required_error: "ゲームを選択してください",
 		invalid_type_error: "有効なゲームを選択してください",
 	}),

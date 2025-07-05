@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "bun:test";
 import { lobbyService } from "./LobbyService";
 import { User } from "@domain/User";
-import { GameType } from "@chao-game-online/shared/core";
+import { GameTypes } from "@chao-game-online/shared/core";
 
 // LobbyServiceはシングルトンのため、内部状態をリセットするためのヘルパーを定義
 const resetLobby = () => {
@@ -21,7 +21,7 @@ describe("LobbyService", () => {
 
 	describe("createRoom", () => {
 		it("新しいルームを作成し、ロビーに追加できる", () => {
-			const room = lobbyService.createRoom(host, "New Room", GameType["four-reversi"]);
+			const room = lobbyService.createRoom(host, "New Room", GameTypes.FOUR_REVERSI);
 			expect(room).toBeDefined();
 			expect(lobbyService.getRoom(room.number)).toBe(room);
 			expect(lobbyService.getAllRoomsInfoDtos()).toHaveLength(1);
@@ -30,7 +30,7 @@ describe("LobbyService", () => {
 
 	describe("joinRoom", () => {
 		it("既存のルームに参加できる", () => {
-			const room = lobbyService.createRoom(host, "Test Room", GameType["four-reversi"]);
+			const room = lobbyService.createRoom(host, "Test Room", GameTypes.FOUR_REVERSI);
 			const joinedRoom = lobbyService.joinRoom(player2, room.number);
 
 			expect(joinedRoom.getPlayerCount()).toBe(2);
@@ -48,7 +48,7 @@ describe("LobbyService", () => {
 		let roomNumber: number;
 
 		beforeEach(() => {
-			const room = lobbyService.createRoom(host, "Test Room", GameType["four-reversi"]);
+			const room = lobbyService.createRoom(host, "Test Room", GameTypes.FOUR_REVERSI);
 			lobbyService.joinRoom(player2, room.number);
 			roomNumber = room.number;
 		});
@@ -79,7 +79,7 @@ describe("LobbyService", () => {
 
 	describe("findRoomByUserId", () => {
 		it("ユーザーIDで参加しているルームを見つけられる", () => {
-			const room = lobbyService.createRoom(host, "Find Me Room", GameType["four-gomoku"]);
+			const room = lobbyService.createRoom(host, "Find Me Room", GameTypes.FOUR_GOMOKU);
 			const foundRoom = lobbyService.findRoomByUserId(host.uid);
 			expect(foundRoom).toBe(room);
 		});

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateRoomSchema, type CreateRoomPayload } from "@chao-game-online/shared/schemas/index";
 import { useLobbyStore } from "./useLobbyStore";
-import { GameType, GameTypeNames } from "@chao-game-online/shared/core";
+import { GameTypeNames, GameTypes } from "@chao-game-online/shared/core";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { useRoomStore } from "../room/useRoomStore";
@@ -22,7 +22,7 @@ export const CreateRoomModal = () => {
 		resolver: zodResolver(CreateRoomSchema),
 		defaultValues: {
 			name: "",
-			GameType: GameType["four-reversi"], // デフォルト値
+			GameType: GameTypes.FOUR_REVERSI, // デフォルト値
 		},
 	});
 
@@ -68,20 +68,18 @@ export const CreateRoomModal = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>ゲームの種類</FormLabel>
-									<Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={String(field.value)}>
+									<Select onValueChange={field.onChange} defaultValue={field.value}>
 										<FormControl>
 											<SelectTrigger>
 												<SelectValue placeholder="ゲームを選択" />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{Object.values(GameType)
-												.filter((v) => !isNaN(Number(v)))
-												.map((gameType) => (
-													<SelectItem key={gameType} value={String(gameType)}>
-														{GameTypeNames[gameType as GameType]}
-													</SelectItem>
-												))}
+											{Object.values(GameTypes).map((gameType) => (
+												<SelectItem key={gameType} value={gameType}>
+													{GameTypeNames[gameType]}
+												</SelectItem>
+											))}
 										</SelectContent>
 									</Select>
 									<FormMessage />
