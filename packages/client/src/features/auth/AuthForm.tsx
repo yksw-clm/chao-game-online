@@ -59,6 +59,9 @@ export const AuthForm = () => {
 			const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
 			await updateProfile(userCredential.user, { displayName: data.displayName });
 
+			// ★ 変更点: IDトークンを強制的に更新し、`onIdTokenChanged`リスナーを発火させる
+			await userCredential.user.getIdToken(true);
+
 			alert("新規登録に成功しました！");
 		} catch (error) {
 			console.error("新規登録エラー:", error);

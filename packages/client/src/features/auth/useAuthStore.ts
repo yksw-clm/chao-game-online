@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { onAuthStateChanged, getIdToken, type User } from "firebase/auth";
+import { getIdToken, type User, onIdTokenChanged } from "firebase/auth";
 import { auth } from "@/services/firebase";
 
 type AuthState = {
@@ -14,7 +14,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 	user: null,
 	idToken: null,
 	initialize: () => {
-		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+		const unsubscribe = onIdTokenChanged(auth, async (user) => {
 			if (user) {
 				const token = await getIdToken(user);
 				set({ user, idToken: token, isLoading: false });
