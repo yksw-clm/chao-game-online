@@ -7,10 +7,14 @@ import { RoomList } from "@/features/lobby/RoomList";
 import { Button } from "@/components/ui/button";
 import { signOut } from "firebase/auth";
 import { auth } from "@/services/firebase";
+import { useRoomStore } from "@/features/room/useRoomStore";
+import { useNavigate } from "react-router-dom";
 
 export const LobbyPage = () => {
 	const { socket } = useSocketStore();
 	const { rooms, setRooms, joinRoom } = useLobbyStore();
+	const { setRoom } = useRoomStore();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!socket) return;
@@ -31,8 +35,8 @@ export const LobbyPage = () => {
 	const handleJoinRoom = (roomNumber: number) => {
 		joinRoom({ roomNumber }, (res) => {
 			if (res.success) {
-				alert(`ルーム ${res.data?.number} に参加しました`);
-				// TODO: ルーム画面に遷移する処理
+				setRoom(res.data); // ルーム情報をストアに保存
+				navigate(`/room/${res.data.number}`); // ルーム画面へ遷移
 			} else {
 				alert(`ルームへの参加に失敗しました: ${res.error}`);
 			}

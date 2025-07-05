@@ -4,6 +4,7 @@ import { useAuthStore } from "./features/auth/useAuthStore";
 import { useAuthSocketSync } from "./hooks/useAuthSocketSync";
 import { AuthPage } from "./pages/AuthPage";
 import { LobbyPage } from "./pages/LobbyPage";
+import { RoomPage } from "./pages/RoomPage";
 import { useSocketStore } from "./services/socket/useSocketStore";
 
 /**
@@ -61,6 +62,14 @@ const router = createBrowserRouter([
 				element: (
 					<ProtectedRoute>
 						<LobbyPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "/room/:roomNumber",
+				element: (
+					<ProtectedRoute>
+						<RoomPage />
 					</ProtectedRoute>
 				),
 			},
