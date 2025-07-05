@@ -190,7 +190,7 @@ export class Game {
 
 		const allFlips: { x: number; y: number }[] = [];
 		this.DIRECTIONS.forEach((dir) => {
-			let currentLine: { x: number; y: number }[] = [];
+			const currentLine: { x: number; y: number }[] = [];
 			let currentX = x + dir.x;
 			let currentY = y + dir.y;
 

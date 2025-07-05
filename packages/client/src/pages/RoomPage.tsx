@@ -78,8 +78,8 @@ export const RoomPage = () => {
 
 	const winnerName = useMemo(() => {
 		if (!gameState?.winner) return "引き分け";
-		return room?.players.find((p) => p.id === gameState.winner)?.displayName ?? "不明";
-	}, [gameState?.winner, room?.players]);
+		return gamePlayers?.find((p) => p.id === gameState.winner)?.displayName ?? "不明";
+	}, [gameState?.winner, gamePlayers]);
 
 	const handleLeaveRoom = () => {
 		leaveRoom(() => {
