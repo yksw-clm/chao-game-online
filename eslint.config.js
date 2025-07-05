@@ -37,6 +37,13 @@ export default tseslint.config(
 			"react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
 		},
 	},
+	// クライアントのUIコンポーネント用の設定
+	{
+		files: ["packages/client/src/components/ui/**/*.{ts,tsx}"],
+		rules: {
+			"react-refresh/only-export-components": "off",
+		},
+	},
 
 	// 3. サーバー(Bun)用の設定
 	{

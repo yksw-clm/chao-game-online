@@ -1,0 +1,5 @@
+[alias]
+@domain = "src/domain"
+@infrastructure = "src/infrastructure"
+@application = "src/application"
+@interfaces = "src/interfaces"

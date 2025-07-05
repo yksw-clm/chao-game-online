@@ -24,6 +24,15 @@
 		// Some stricter flags (disabled by default)
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
-		"noPropertyAccessFromIndexSignature": false
+		"noPropertyAccessFromIndexSignature": false,
+
+		// paths
+		"baseUrl": ".",
+		"paths": {
+			"@domain/*": ["src/domain/*"],
+			"@infrastructure/*": ["src/infrastructure/*"],
+			"@application/*": ["src/application/*"],
+			"@interfaces/*": ["src/interfaces/*"]
+		}
 	}
 }
