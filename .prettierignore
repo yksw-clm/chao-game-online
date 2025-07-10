@@ -1,0 +1,11 @@
+node_modules
+dist
+bun.lock*
+*.log
+.eslintcache
+coverage
+.vscode
+.idea
+.env
+.env.*
+!.env.example
