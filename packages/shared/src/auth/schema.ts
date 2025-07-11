@@ -12,10 +12,7 @@ export const displayNameSchema = z
   .string({ error: (issue) => (issue.input === undefined ? "このフィールドは必須です" : "文字列を入力してください") })
   .min(1, "表示名は1文字以上である必要があります。")
   .max(10, "表示名は10文字以下である必要があります。")
-  .regex(
-    /^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}a-zA-Z0-9_]+$/u,
-    "表示名は日本語・英数字・アンダースコアのみ使用できます。"
-  );
+  .regex(/^[\p{L}\p{N}_]+$/u, "表示名は日本語・英数字・アンダースコアのみ使用できます。");
 
 // パスワード
 export const passwordSchema = z

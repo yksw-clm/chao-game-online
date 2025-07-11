@@ -19,7 +19,7 @@ export class AuthRoutes {
 
     // 認証が必要なルート
     this.router.get("/me", this.authMiddleware.authenticate, this.authController.getUser);
-    this.router.put("/me/displayName", this.authMiddleware.authenticate, this.authController.updateDisplayName);
+    this.router.put("/me/display-name", this.authMiddleware.authenticate, this.authController.updateDisplayName);
     this.router.delete("/me", this.authMiddleware.authenticate, this.authController.deleteUser);
   }
 }

@@ -7,7 +7,8 @@ export class UserId {
   constructor(value: string) {
     const result = userIdSchema.safeParse(value);
     if (!result.success) {
-      throw new ValidationError(result.error.message, "userId");
+      const errorMessage = result.error.message || "無効なユーザーIDです";
+      throw new ValidationError(errorMessage, "userId");
     }
     this._value = value;
   }

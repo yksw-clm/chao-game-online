@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "bun run --filter @chao-game-online/client build && bun run --filter @chao-game-online/server build",
-    "lint": "eslint --fix --cache packages/**/src/**/*.{ts,tsx}",
+    "lint": "eslint --fix --cache .",
     "format": "prettier --write --cache .",
     "format:check": "prettier --check ."
   },
