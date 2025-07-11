@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 // Infrastructure
 import { UserRepository } from "@auth/infrastructure/repositories/UserRepository";
@@ -48,6 +49,7 @@ async function bootstrap() {
     })
   );
   app.use(express.json());
+  app.use(cookieParser()); // Cookie parser追加
 
   // Dependencies injection
   const userRepository = new UserRepository();

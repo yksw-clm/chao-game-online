@@ -5,6 +5,7 @@ import { GetUserUseCase } from "@auth/application/usecases/GetUserUseCase";
 import { UpdateDisplayNameUseCase } from "@auth/application/usecases/UpdateDisplayNameUseCase";
 import { DeleteUserUseCase } from "@auth/application/usecases/DeleteUserUseCase";
 import { JwtTokenService } from "@auth/infrastructure/services/JwtTokenService";
+import { CookieUtils } from "@core/utils/CookieUtils";
 import type { AuthenticatedRequest } from "@core/presentation/middlewares/AuthMiddleware";
 import { Result, AppError } from "@chao-game-online/shared/core";
 import type { RegisterUserDto, LoginUserDto, UpdateDisplayNameDto } from "@chao-game-online/shared/auth";
@@ -23,9 +24,12 @@ export class AuthController {
     try {
       const dto: RegisterUserDto = req.body;
       const user = await this.registerUserUseCase.execute(dto);
-      const token = this.tokenService.generateToken(user.userId);
+      const tokenPair = this.tokenService.generateTokenPair(user.userId);
 
-      res.status(201).json(Result.ok({ user, token }));
+      // Cookieにトークンを設定
+      CookieUtils.setTokenCookies(res, tokenPair.accessToken, tokenPair.refreshToken);
+
+      res.status(201).json(Result.ok({ user }));
     } catch (error) {
       if (error instanceof AppError) {
         const statusCode = error.code === "USER_ALREADY_EXISTS" ? 409 : 400;
@@ -40,9 +44,12 @@ export class AuthController {
     try {
       const dto: LoginUserDto = req.body;
       const user = await this.loginUserUseCase.execute(dto);
-      const token = this.tokenService.generateToken(user.userId);
+      const tokenPair = this.tokenService.generateTokenPair(user.userId);
 
-      res.status(200).json(Result.ok({ user, token }));
+      // Cookieにトークンを設定
+      CookieUtils.setTokenCookies(res, tokenPair.accessToken, tokenPair.refreshToken);
+
+      res.status(200).json(Result.ok({ user }));
     } catch (error) {
       if (error instanceof AppError) {
         const statusCode = error.code === "USER_NOT_FOUND" || error.code === "INVALID_PASSWORD" ? 401 : 400;
@@ -104,6 +111,10 @@ export class AuthController {
       }
 
       await this.deleteUserUseCase.execute(req.userId);
+
+      // Cookieをクリア
+      CookieUtils.clearTokenCookies(res);
+
       res.status(204).send();
     } catch (error) {
       if (error instanceof AppError) {
