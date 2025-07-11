@@ -3,8 +3,11 @@
   "module": "src/index.ts",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./src/index.ts"
+    "./core": {
+      "import": "./src/core/index.ts"
+    },
+    "./auth": {
+      "import": "./src/auth/index.ts"
     }
   },
   "devDependencies": {
@@ -12,5 +15,8 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "zod": "^4.0.5"
   }
 }
